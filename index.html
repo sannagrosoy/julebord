@@ -66,7 +66,25 @@ dd { margin: 0; font-size: 17px; }
 .nedtelling span { display: block; margin-top: 6px; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #8fb4de; }
 @media (prefers-reduced-motion: reduce) { .nedtelling b.flipp { animation: none; } }
 .kopier:focus-visible { outline: 2px solid var(--navy-2); outline-offset: 2px; }
-.svar { margin: 14px 0 0; font-size: 14px; color: var(--navy-2); }
+h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; text-align: center; }
+.under { text-align: center; color: var(--blue); font-size: 14px; margin: 4px 0 18px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.navnefelt { font: inherit; font-size: 22px; text-align: center; width: 100%; border: 1.5px solid var(--line); border-radius: 999px; padding: 12px 16px; color: var(--navy); background: #fff; }
+.meg { text-align: center; display: grid; justify-items: center; gap: 6px; margin-top: 18px; }
+.meg img { width: min(180px, 52vw); aspect-ratio: 1; max-width: 100%; border-radius: 50%; border: 6px solid #fff; outline: 2px solid var(--line); animation: inn 0.6s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes inn { from { transform: scale(0.2) rotate(-25deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.meg .hei { font-family: var(--display); font-size: 28px; margin-top: 6px; }
+.svarboks { margin-top: 18px; display: grid; gap: 10px; }
+.valg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.valg button { font: inherit; border-radius: 999px; padding: 12px; cursor: pointer; border: 1.5px solid var(--navy); background: transparent; color: var(--navy); }
+.valg button.ja { background: var(--navy); color: #fff; }
+.valg button:disabled { opacity: 0.6; cursor: wait; }
+.paamelding label:not(.sr) { font-size: 13px; color: var(--navy-2); }
+textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px; color: var(--navy); background: #fff; resize: vertical; }
+.navnefelt:focus-visible, .valg button:focus-visible, textarea:focus-visible { outline: 2px solid var(--navy-2); outline-offset: 2px; }
+.melding { text-align: center; font-size: 15px; min-height: 1.5em; color: var(--navy-2); margin: 14px 0 0; }
+.melding.feil { color: var(--rose); }
+@media (prefers-reduced-motion: reduce) { .meg img { animation: none; } }
 .hilsen { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--navy-2); font-size: 15px; }
 .hilsen img { width: 40px; height: 40px; border-radius: 50%; }
 </style>
@@ -94,7 +112,28 @@ dd { margin: 0; font-size: 17px; }
         <div><b id="s" class="sek">–</b><span>sek</span></div>
       </div>
     </div>
-    <p class="svar">Gi beskjed om du kommer!</p>
+  </section>
+
+  <section class="kort paamelding" aria-labelledby="pTittel">
+    <h2 id="pTittel">Kommer du?</h2>
+    <p class="under">Skriv navnet ditt</p>
+    <form id="skjema" autocomplete="off" novalidate>
+      <label for="navn" class="sr">Navn</label>
+      <input id="navn" class="navnefelt" type="text" placeholder="Navn" autocapitalize="words" spellcheck="false" maxlength="40">
+      <div class="meg" id="meg" hidden>
+        <img id="megBilde" alt="">
+        <div class="hei" id="megHei"></div>
+      </div>
+      <div class="svarboks" id="svarboks" hidden>
+        <div class="valg">
+          <button type="button" class="ja" id="ja">Jeg kommer</button>
+          <button type="button" id="nei">Kan ikke</button>
+        </div>
+        <label for="beskjed">Allergier eller en beskjed (valgfritt)</label>
+        <textarea id="beskjed" maxlength="200"></textarea>
+      </div>
+    </form>
+    <p class="melding" id="melding" role="status"></p>
   </section>
 
   <div class="hilsen"><img src="avatarer/sanna.jpg" alt="">Hilsen Sanna</div>
@@ -128,6 +167,61 @@ $("kopier").addEventListener("click", () => {
   } catch { velg(); }
   function velg() { const r = document.createRange(); r.selectNodeContents($("adr")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 });
+
+// Påmelding: svarene sendes til Google-arket til Sanna
+const SKRIPT_URL = "https://script.google.com/macros/s/AKfycbzTb9S58camWZGBDqttOIFTAVNb_u0YOrSk2g2139OXNvjKRZCNL7Sweo2NkbniIdqh/exec";
+const finn = t => GJESTER.find(n => n.toLocaleLowerCase("nb") === t.trim().toLocaleLowerCase("nb")) || null;
+const pent = t => t.trim().replace(/\s+/g, " ").replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase("nb"));
+let viste = null;
+function melding(t, feil) { $("melding").textContent = t; $("melding").className = "melding" + (feil ? " feil" : ""); }
+function lest() { try { return JSON.parse(localStorage.getItem("julebord-svar") || "null"); } catch { return null; } }
+
+function oppdater() {
+  const tekst = $("navn").value.trim();
+  const kjent = finn(tekst);
+  if (kjent !== viste) {
+    viste = kjent;
+    $("meg").hidden = !kjent;
+    if (kjent) {
+      const img = $("megBilde");
+      img.src = bilde(kjent);
+      img.style.animation = "none"; void img.offsetWidth; img.style.animation = "";
+      $("megHei").textContent = "Hei, " + kjent + "!";
+    }
+  }
+  $("svarboks").hidden = tekst.length < 2;
+  const tidligere = lest();
+  if (tidligere && tidligere.navn.toLocaleLowerCase("nb") === pent(tekst).toLocaleLowerCase("nb")) {
+    melding(tidligere.svar === "kommer" ? "Du har svart at du kommer. Du kan endre det." : "Du har svart at du ikke kan. Du kan endre det.");
+  } else if (!$("melding").classList.contains("feil")) melding("");
+}
+$("navn").addEventListener("input", () => { if ($("melding").classList.contains("feil")) melding(""); oppdater(); });
+$("skjema").addEventListener("submit", e => e.preventDefault());
+
+async function send(svar) {
+  const navn = finn($("navn").value) || pent($("navn").value);
+  if (navn.length < 2) { melding("Skriv navnet ditt først.", true); return; }
+  if (!SKRIPT_URL) { melding("Påmeldingen er ikke åpnet ennå.", true); return; }
+  $("ja").disabled = $("nei").disabled = true;
+  melding("Sender …");
+  try {
+    const r = await fetch(SKRIPT_URL, { method: "POST", body: JSON.stringify({ navn, svar, beskjed: $("beskjed").value.trim() }) });
+    const data = await r.json();
+    if (!data.ok) throw new Error();
+    try { localStorage.setItem("julebord-svar", JSON.stringify({ navn, svar })); } catch {}
+    melding(svar === "kommer" ? "Så gøy! Vi ses 27. november." : "Så synd! Takk for at du sa ifra.");
+  } catch {
+    melding("Svaret kom ikke fram. Prøv igjen, eller si ifra til Sanna.", true);
+  } finally {
+    $("ja").disabled = $("nei").disabled = false;
+  }
+}
+$("ja").addEventListener("click", () => send("kommer"));
+$("nei").addEventListener("click", () => send("ikke"));
+
+const forrige = lest();
+if (forrige?.navn) { $("navn").value = forrige.navn; $("beskjed").value = ""; }
+oppdater();
 
 const to = n => String(n).padStart(2, "0");
 function sett(id, verdi) {
