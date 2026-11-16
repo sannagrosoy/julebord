@@ -116,6 +116,7 @@ textarea { font: inherit; width: 100%; border: 1.5px solid var(--linje); border-
 textarea::placeholder { color: #5f7a9e; }
 .skaalknapp:focus-visible, .lenkeknapp:focus-visible, textarea:focus-visible, .kopier:focus-visible { outline: 2px solid var(--is); outline-offset: 2px; }
 .melding { text-align: center; font-size: 15px; min-height: 1.5em; color: var(--is); margin: 14px 0 0; }
+.ekstra { margin: 12px 0 0; padding: 12px 14px; border-radius: 14px; background: rgba(255, 226, 166, 0.12); border: 1px solid rgba(255, 226, 166, 0.45); color: var(--lys); text-align: center; font-size: 15px; animation: inn 0.5s ease; }
 .melding.feil { color: #ff9aac; }
 
 .hilsen { text-align: center; color: var(--dempet); font-size: 15px; }
@@ -202,6 +203,7 @@ textarea::placeholder { color: #5f7a9e; }
       </div>
     </form>
     <p class="melding" id="melding" role="status"></p>
+    <p class="ekstra" id="ekstra" hidden></p>
   </section>
 
   <div class="hilsen">Hilsen Sanna</div>
@@ -313,6 +315,11 @@ async function send(svar) {
     if (!data.ok) throw new Error();
     try { localStorage.setItem("julebord-svar", JSON.stringify({ navn, svar })); } catch {}
     melding(svar === "kommer" ? "Skål, " + navn.split(" ")[0] + "! Vi ses 27. november." : "Så synd! Vi skåler for deg.");
+    const fornavn = navn.split(" ")[0].toLocaleLowerCase("nb");
+    if (svar === "kommer" && fornavn === "ingrid") {
+      $("ekstra").textContent = "PS, Ingrid: Du må melde deg til kjøkkentjeneste senest kl. 11.00 dagen av julebordet!";
+      $("ekstra").hidden = false;
+    } else $("ekstra").hidden = true;
   } catch {
     melding("Svaret kom ikke fram. Prøv igjen, eller si ifra til Sanna.", true);
   } finally {
