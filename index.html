@@ -84,16 +84,12 @@ dd { margin: 0; font-size: 17px; }
 
 /* Påmelding */
 h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; text-align: center; }
-.skaaltittel { font-size: 24px; margin-bottom: 18px; text-wrap: balance; }
+.skaaltittel { font-size: 24px; margin-bottom: 16px; text-wrap: balance; }
 .under { text-align: center; color: var(--dempet); font-size: 14px; margin: 4px 0 18px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.navnefelt { font: inherit; font-size: 22px; text-align: center; width: 100%; border: 1.5px solid var(--linje); border-radius: 999px; padding: 12px 16px; color: var(--tekst); background: #0a1424; }
-.navnefelt::placeholder { color: #5f7a9e; }
-@keyframes inn { from { transform: scale(0.2) rotate(-25deg); opacity: 0; } to { transform: none; opacity: 1; } }
-.felter { display: grid; gap: 10px; }
-.skaal { display: grid; justify-items: center; gap: 4px; margin-top: 14px; }
-.glass { width: 180px; max-width: 65%; height: auto; overflow: visible; }
-.glass .g { transition: transform 0.3s; }
+.skaal { display: grid; justify-items: center; margin-bottom: 6px; }
+.glass { width: 78px; height: auto; overflow: visible; }
+.glass path[stroke], .glass line { stroke-width: 2.6; }
 .glass .v { transform-origin: 48px 80px; transform: rotate(-12deg); }
 .glass .h { transform-origin: 72px 80px; transform: rotate(12deg); }
 .glass.klink .v { animation: klinkV 0.9s cubic-bezier(.3, 1.4, .5, 1); }
@@ -105,13 +101,20 @@ h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; 
 @keyframes gnist { 0% { opacity: 0; transform: translate(0, 0) scale(0.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--gx), var(--gy)) scale(1); } }
 .glass .boble { fill: rgba(255, 255, 255, 0.7); animation: boble 2.6s ease-in infinite; }
 @keyframes boble { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-16px); opacity: 0; } }
-.skaalknapp { font: inherit; font-size: 18px; border-radius: 999px; padding: 13px 30px; cursor: pointer; border: 0; background: var(--lys); color: #2a1d05; box-shadow: 0 0 24px rgba(255, 214, 140, 0.25); }
-.skaalknapp:hover { box-shadow: 0 0 32px rgba(255, 214, 140, 0.4); }
-.neiknapp { font: inherit; font-size: 14px; background: none; border: 0; color: var(--dempet); text-decoration: underline; cursor: pointer; padding: 6px; }
-.skaalknapp:disabled, .neiknapp:disabled { opacity: 0.6; cursor: wait; }
-.paamelding label:not(.sr) { font-size: 13px; color: var(--dempet); }
-textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var(--linje); border-radius: 12px; padding: 10px; color: var(--tekst); background: #0a1424; resize: vertical; }
-.navnefelt:focus-visible, .skaalknapp:focus-visible, .neiknapp:focus-visible, textarea:focus-visible, .kopier:focus-visible { outline: 2px solid var(--is); outline-offset: 2px; }
+@keyframes inn { from { transform: scale(0.2) rotate(-25deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.pille { display: flex; gap: 6px; align-items: center; background: #0a1424; border: 1.5px solid var(--linje); border-radius: 999px; padding: 5px; }
+.pille:focus-within { border-color: var(--is); }
+.pille input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--tekst); font: inherit; font-size: 19px; padding: 8px 14px; outline: none; }
+.pille input::placeholder { color: #5f7a9e; }
+.skaalknapp { font: inherit; font-size: 17px; border-radius: 999px; padding: 10px 20px; cursor: pointer; border: 0; background: var(--lys); color: #2a1d05; box-shadow: 0 0 20px rgba(255, 214, 140, 0.25); flex: none; }
+.skaalknapp:hover { box-shadow: 0 0 28px rgba(255, 214, 140, 0.4); }
+.smaa { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 8px; color: var(--dempet); font-size: 14px; }
+.lenkeknapp { font: inherit; font-size: 14px; background: none; border: 0; color: var(--dempet); text-decoration: underline; cursor: pointer; padding: 4px; }
+.skaalknapp:disabled, .lenkeknapp:disabled { opacity: 0.6; cursor: wait; }
+#allergiboks { margin-top: 8px; }
+textarea { font: inherit; width: 100%; border: 1.5px solid var(--linje); border-radius: 14px; padding: 10px 12px; color: var(--tekst); background: #0a1424; resize: vertical; }
+textarea::placeholder { color: #5f7a9e; }
+.skaalknapp:focus-visible, .lenkeknapp:focus-visible, textarea:focus-visible, .kopier:focus-visible { outline: 2px solid var(--is); outline-offset: 2px; }
 .melding { text-align: center; font-size: 15px; min-height: 1.5em; color: var(--is); margin: 14px 0 0; }
 .melding.feil { color: #ff9aac; }
 
@@ -158,36 +161,44 @@ textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var
   </section>
 
   <section class="kort paamelding" aria-labelledby="pTittel">
+    <div class="skaal">
+      <svg class="glass" id="glass" viewBox="0 0 120 92" aria-hidden="true">
+        <g class="g v">
+          <path d="M39 6 L57 6 L54 44 Q48 52 42 44 Z" fill="rgba(255,255,255,0.06)" stroke="#cfe1f3" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M40.6 20 L55.4 20 L54 44 Q48 51 42 44 Z" fill="#ffe2a6" opacity="0.85"/>
+          <circle class="boble" cx="46" cy="40" r="1.1"/><circle class="boble" cx="50" cy="36" r="0.9" style="animation-delay:-1.2s"/>
+          <line x1="48" y1="49" x2="48" y2="79" stroke="#cfe1f3" stroke-width="1.6"/>
+          <path d="M40 80 Q48 76 56 80" fill="none" stroke="#cfe1f3" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+        <g class="g h">
+          <path d="M63 6 L81 6 L78 44 Q72 52 66 44 Z" fill="rgba(255,255,255,0.06)" stroke="#cfe1f3" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M64.6 20 L79.4 20 L78 44 Q72 51 66 44 Z" fill="#ffe2a6" opacity="0.85"/>
+          <circle class="boble" cx="70" cy="38" r="1" style="animation-delay:-0.6s"/><circle class="boble" cx="75" cy="41" r="0.9" style="animation-delay:-1.8s"/>
+          <line x1="72" y1="49" x2="72" y2="79" stroke="#cfe1f3" stroke-width="1.6"/>
+          <path d="M64 80 Q72 76 80 80" fill="none" stroke="#cfe1f3" stroke-width="1.6" stroke-linecap="round"/>
+        </g>
+        <circle class="gnist" cx="60" cy="6" r="2.2" style="--gx:-16px;--gy:-10px"/>
+        <circle class="gnist" cx="60" cy="6" r="1.8" style="--gx:14px;--gy:-12px"/>
+        <circle class="gnist" cx="60" cy="6" r="1.5" style="--gx:0px;--gy:-18px"/>
+        <circle class="gnist" cx="60" cy="6" r="1.4" style="--gx:-22px;--gy:2px"/>
+        <circle class="gnist" cx="60" cy="6" r="1.4" style="--gx:22px;--gy:0px"/>
+      </svg>
+    </div>
     <h2 id="pTittel" class="skaaltittel">Vi tar en skål for alle jentan</h2>
-    <form id="skjema" class="felter" autocomplete="off" novalidate>
-      <label for="navn" class="sr">Navn</label>
-      <input id="navn" class="navnefelt" type="text" placeholder="Navn" autocapitalize="words" spellcheck="false" maxlength="40">
-      <label for="beskjed">Allergier eller en beskjed (valgfritt)</label>
-      <textarea id="beskjed" maxlength="200"></textarea>
-      <div class="skaal">
-        <svg class="glass" id="glass" viewBox="0 0 120 92" aria-hidden="true">
-          <g class="g v">
-            <path d="M39 6 L57 6 L54 44 Q48 52 42 44 Z" fill="rgba(255,255,255,0.06)" stroke="#cfe1f3" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M40.6 20 L55.4 20 L54 44 Q48 51 42 44 Z" fill="#ffe2a6" opacity="0.85"/>
-            <circle class="boble" cx="46" cy="40" r="1.1"/><circle class="boble" cx="50" cy="36" r="0.9" style="animation-delay:-1.2s"/>
-            <line x1="48" y1="49" x2="48" y2="79" stroke="#cfe1f3" stroke-width="1.6"/>
-            <path d="M40 80 Q48 76 56 80" fill="none" stroke="#cfe1f3" stroke-width="1.6" stroke-linecap="round"/>
-          </g>
-          <g class="g h">
-            <path d="M63 6 L81 6 L78 44 Q72 52 66 44 Z" fill="rgba(255,255,255,0.06)" stroke="#cfe1f3" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M64.6 20 L79.4 20 L78 44 Q72 51 66 44 Z" fill="#ffe2a6" opacity="0.85"/>
-            <circle class="boble" cx="70" cy="38" r="1" style="animation-delay:-0.6s"/><circle class="boble" cx="75" cy="41" r="0.9" style="animation-delay:-1.8s"/>
-            <line x1="72" y1="49" x2="72" y2="79" stroke="#cfe1f3" stroke-width="1.6"/>
-            <path d="M64 80 Q72 76 80 80" fill="none" stroke="#cfe1f3" stroke-width="1.6" stroke-linecap="round"/>
-          </g>
-          <circle class="gnist" cx="60" cy="6" r="2.2" style="--gx:-16px;--gy:-10px"/>
-          <circle class="gnist" cx="60" cy="6" r="1.8" style="--gx:14px;--gy:-12px"/>
-          <circle class="gnist" cx="60" cy="6" r="1.5" style="--gx:0px;--gy:-18px"/>
-          <circle class="gnist" cx="60" cy="6" r="1.4" style="--gx:-22px;--gy:2px"/>
-          <circle class="gnist" cx="60" cy="6" r="1.4" style="--gx:22px;--gy:0px"/>
-        </svg>
-        <button type="button" class="skaalknapp" id="ja">Skål, jeg kommer!</button>
-        <button type="button" class="neiknapp" id="nei">Jeg kan dessverre ikke</button>
+    <form id="skjema" autocomplete="off" novalidate>
+      <div class="pille">
+        <label for="navn" class="sr">Navn</label>
+        <input id="navn" type="text" placeholder="Navn" autocapitalize="words" spellcheck="false" maxlength="40" enterkeyhint="send">
+        <button type="submit" class="skaalknapp" id="ja">Skål!</button>
+      </div>
+      <div class="smaa">
+        <button type="button" class="lenkeknapp" id="visAllergi" aria-expanded="false" aria-controls="allergiboks">+ Allergier</button>
+        <span aria-hidden="true">·</span>
+        <button type="button" class="lenkeknapp" id="nei">Jeg kan dessverre ikke</button>
+      </div>
+      <div id="allergiboks" hidden>
+        <label for="beskjed" class="sr">Allergier eller en beskjed</label>
+        <textarea id="beskjed" maxlength="200" rows="2" placeholder="Allergier eller en beskjed"></textarea>
       </div>
     </form>
     <p class="melding" id="melding" role="status"></p>
@@ -281,7 +292,14 @@ function visTidligere() {
   } else if (!$("melding").classList.contains("feil")) melding("");
 }
 $("navn").addEventListener("input", () => { if ($("melding").classList.contains("feil")) melding(""); visTidligere(); });
-$("skjema").addEventListener("submit", e => e.preventDefault());
+$("skjema").addEventListener("submit", e => { e.preventDefault(); send("kommer"); });
+$("visAllergi").addEventListener("click", () => {
+  const apen = $("allergiboks").hidden;
+  $("allergiboks").hidden = !apen;
+  $("visAllergi").setAttribute("aria-expanded", String(apen));
+  $("visAllergi").textContent = apen ? "– Allergier" : "+ Allergier";
+  if (apen) $("beskjed").focus();
+});
 
 async function send(svar) {
   const navn = pent($("navn").value);
@@ -301,7 +319,6 @@ async function send(svar) {
     $("ja").disabled = $("nei").disabled = false;
   }
 }
-$("ja").addEventListener("click", () => send("kommer"));
 $("nei").addEventListener("click", () => send("ikke"));
 
 const forrige = lest();
