@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Trøndernes julebord</title>
+<meta property="og:title" content="Trøndernes julebord">
+<meta property="og:description" content="Fredag 27. november kl. 18.00">
+<style>
+/* Layout: ett smalt, isblått kort midt på siden; info og nedtelling. Fast lys stil som quizen. */
+:root {
+  --bg: #e3eef9;
+  --card: #f8fbff;
+  --navy: #1f3a5f;
+  --navy-2: #2b5288;
+  --blue: #5b8bc4;
+  --ice: #cfe1f3;
+  --line: #c9d9ec;
+  --rose: #a8344a;
+  --display: Optima, "Candara", "Segoe UI", sans-serif;
+  --body: Optima, "Candara", "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--navy);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-block: 32px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  min-height: 100%;
+}
+#sno { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+main { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; display: grid; gap: 20px; }
+.kort { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 28px 22px; }
+.topp { text-align: center; display: grid; gap: 4px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--blue); }
+h1 { font-family: var(--display); font-weight: 400; font-size: min(40px, calc((100vw - 80px) / 10.5)); line-height: 1.1; white-space: nowrap; margin: 6px 0 0; letter-spacing: 0.01em; }
+.aar { font-size: 20px; color: var(--blue); letter-spacing: 0.3em; }
+.fjes { display: flex; justify-content: center; margin: 18px 0 4px; }
+.fjes img { width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--card); margin-left: -10px; background: var(--ice); }
+.fjes img:first-child { margin-left: 0; }
+.ingress { color: var(--navy-2); margin: 14px 0 0; text-wrap: pretty; }
+dl { margin: 22px 0 0; display: grid; gap: 0; border-top: 1px solid var(--line); text-align: left; }
+dl > div { display: grid; grid-template-columns: 70px 1fr; gap: 12px; padding: 12px 2px; border-bottom: 1px solid var(--line); align-items: baseline; }
+dt { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue); }
+dd { margin: 0; font-size: 17px; }
+.kopier { font: inherit; font-size: 13px; color: var(--navy-2); background: none; border: 0; padding: 0; margin-left: 8px; text-decoration: underline; cursor: pointer; }
+.klokke { margin-top: 22px; background: var(--navy); border-radius: 20px; padding: 20px 12px 18px; color: #fff; display: grid; gap: 12px; }
+.klokke .eyebrow { color: #8fb4de; }
+.nedtelling { display: flex; justify-content: center; gap: 6px; perspective: 400px; }
+.nedtelling > div { text-align: center; }
+.nedtelling b { display: block; font-weight: 400; font-size: clamp(30px, 10vw, 42px); line-height: 1; width: clamp(54px, 17vw, 66px); padding: 10px 0 8px; border-radius: 10px; background: #e8f1fb; color: var(--navy); font-variant-numeric: tabular-nums; position: relative; transform-origin: 50% 50%; }
+.nedtelling b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(31, 58, 95, 0.18); }
+.nedtelling b.sek { background: #d9546b; color: #fff; }
+.nedtelling b.sek::after { background: rgba(255, 255, 255, 0.3); }
+.nedtelling b.flipp { animation: flipp 0.45s ease; }
+@keyframes flipp { 0% { transform: rotateX(0); } 50% { transform: rotateX(-90deg); } 100% { transform: rotateX(0); } }
+.nedtelling span { display: block; margin-top: 6px; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #8fb4de; }
+@media (prefers-reduced-motion: reduce) { .nedtelling b.flipp { animation: none; } }
+.kopier:focus-visible { outline: 2px solid var(--navy-2); outline-offset: 2px; }
+.svar { margin: 14px 0 0; font-size: 14px; color: var(--navy-2); }
+.hilsen { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--navy-2); font-size: 15px; }
+.hilsen img { width: 40px; height: 40px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<canvas id="sno" aria-hidden="true"></canvas>
+<main>
+  <section class="kort topp">
+    <div class="eyebrow">Du er invitert til</div>
+    <h1 id="tittel">Trøndernes julebord</h1>
+    <div class="fjes" id="fjes"></div>
+    <p class="ingress">Velkommen til en kveld med god mat og drikke, leker og god stemning. Det blir servert treretters med en liten smak av drikke til maten. Ta ellers med det du vil ha av refreshments.</p>
+    <dl>
+      <div><dt>Når</dt><dd>Fredag 27. november, kl. 18.00</dd></div>
+      <div><dt>Hvor</dt><dd><span id="adr">Søren Jaabæks gate 8C</span><button class="kopier" id="kopier" type="button">Kopier</button></dd></div>
+      <div><dt>Antrekk</dt><dd>Pyntet og klar for fest</dd></div>
+    </dl>
+    <div class="klokke">
+      <div class="eyebrow" id="ntTekst">Døra åpner om</div>
+      <div class="nedtelling" id="nedtelling" aria-live="off">
+        <div><b id="d">–</b><span>dager</span></div>
+        <div><b id="t">–</b><span>timer</span></div>
+        <div><b id="m">–</b><span>min</span></div>
+        <div><b id="s" class="sek">–</b><span>sek</span></div>
+      </div>
+    </div>
+    <p class="svar">Gi beskjed om du kommer!</p>
+  </section>
+
+  <div class="hilsen"><img src="avatarer/sanna.jpg" alt="">Hilsen Sanna</div>
+</main>
+
+<script>
+const GJESTER = ["Vilde", "Emma", "Ida", "Margit", "Ingrid", "Hedvig", "Caroline"];
+const START = new Date("2026-11-27T18:00:00+01:00");
+const bilde = n => "avatarer/" + n.toLowerCase() + ".jpg";
+const $ = id => document.getElementById(id);
+
+// Tittelen på én linje: krymp litt hvis den ikke får plass
+function tilpass() {
+  const h = $("tittel");
+  h.style.fontSize = "";
+  let px = parseFloat(getComputedStyle(h).fontSize);
+  while (h.scrollWidth > h.clientWidth && px > 18) { px -= 1; h.style.fontSize = px + "px"; }
+}
+tilpass(); addEventListener("resize", tilpass);
+document.fonts?.ready.then(tilpass);
+
+// Fjes øverst
+for (const n of GJESTER) { const i = new Image(); i.src = bilde(n); i.alt = n; $("fjes").append(i); }
+
+// Kopier adresse
+$("kopier").addEventListener("click", () => {
+  const tekst = $("adr").textContent;
+  const ok = () => { $("kopier").textContent = "Kopiert"; setTimeout(() => $("kopier").textContent = "Kopier", 1800); };
+  try {
+    navigator.clipboard.writeText(tekst).then(ok, () => velg());
+  } catch { velg(); }
+  function velg() { const r = document.createRange(); r.selectNodeContents($("adr")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+});
+
+const to = n => String(n).padStart(2, "0");
+function sett(id, verdi) {
+  const el = $(id);
+  if (el.textContent === verdi) return;
+  el.textContent = verdi;
+  el.classList.remove("flipp"); void el.offsetWidth; el.classList.add("flipp");
+}
+
+function tell() {
+  const naa = Date.now();
+  // Hovedklokka
+  const ms = START - naa;
+  if (ms <= 0) {
+    $("nedtelling").hidden = true;
+    $("ntTekst").textContent = naa - START < 12 * 3600e3 ? "Det er i kveld! Velkommen inn." : "Takk for en fin kveld!";
+  } else {
+    const sek = Math.floor(ms / 1000);
+    sett("d", String(Math.floor(sek / 86400)));
+    sett("t", to(Math.floor(sek / 3600) % 24));
+    sett("m", to(Math.floor(sek / 60) % 60));
+    sett("s", to(sek % 60));
+  }
+}
+tell(); setInterval(tell, 1000);
+
+// Snø
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = $("sno"), x = c.getContext("2d");
+  let w, h, fnugg;
+  function str() {
+    w = c.width = innerWidth * devicePixelRatio; h = c.height = innerHeight * devicePixelRatio;
+    fnugg = Array.from({ length: Math.min(70, Math.round(innerWidth / 12)) }, () => ({
+      x: Math.random() * w, y: Math.random() * h, r: (1 + Math.random() * 2.2) * devicePixelRatio,
+      v: (0.3 + Math.random() * 0.7) * devicePixelRatio, s: Math.random() * 6.28
+    }));
+  }
+  str(); addEventListener("resize", str);
+  (function steg() {
+    x.clearRect(0, 0, w, h); x.fillStyle = "rgba(255,255,255,0.9)";
+    for (const f of fnugg) {
+      f.y += f.v; f.s += 0.01; f.x += Math.sin(f.s) * 0.4;
+      if (f.y > h + 5) { f.y = -5; f.x = Math.random() * w; }
+      x.beginPath(); x.arc(f.x, f.y, f.r, 0, 6.28); x.fill();
+    }
+    requestAnimationFrame(steg);
+  })();
+})();
+</script>
+</body>
+</html>
