@@ -54,7 +54,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: min(42px, calc((1
 .lenke path { fill: none; stroke: #4d6b96; stroke-width: 0.35; }
 .lys { position: absolute; width: 1.9%; aspect-ratio: 1; border-radius: 50%; background: var(--lys); transform: translate(-50%, -20%); box-shadow: 0 0 8px 3px rgba(255, 210, 130, 0.55), 0 0 22px 6px rgba(255, 200, 120, 0.18); animation: blink 2.8s ease-in-out infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-.pol { position: absolute; width: 24.5%; transform: translate(-50%, 0) rotate(var(--r)); transform-origin: 50% 0; padding: 0; border: 0; background: none; cursor: zoom-in; animation: sving 5s ease-in-out infinite; animation-delay: var(--d); }
+.pol { position: absolute; width: 19.5%; transform: translate(-50%, 0) rotate(var(--r)); transform-origin: 50% 0; padding: 0; border: 0; background: none; cursor: zoom-in; animation: sving 5s ease-in-out infinite; animation-delay: var(--d); }
 @keyframes sving { 0%, 100% { transform: translate(-50%, 0) rotate(var(--r)); } 50% { transform: translate(-50%, 0) rotate(calc(var(--r) * -0.4)); } }
 .pol .ramme { display: block; background: var(--papir); padding: 7% 7% 24%; border-radius: 2px; box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55); }
 .pol img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: #2a3a55; }
@@ -183,10 +183,11 @@ const $ = id => document.getElementById(id);
 
 // Bildene på lyslenka: fil, hvor i bildet ansiktene er, og vinkel
 const POLAROIDER = [
-  { src: "bilder/bilde1.jpg", fokus: "35% 45%", r: -8 },
-  { src: "bilder/bilde2.jpg", fokus: "60% 40%", r: 4 },
-  { src: "bilder/bilde3.jpg", fokus: "50% 45%", r: -3 },
-  { src: "bilder/bilde4.jpg", fokus: "50% 40%", r: 7 }
+  { src: "bilder/bilde1.jpg", fokus: "50% 50%", r: -8 },
+  { src: "bilder/bilde2.jpg", fokus: "50% 18%", r: 5 },
+  { src: "bilder/bilde3.jpg", fokus: "50% 42%", r: -3 },
+  { src: "bilder/bilde4.jpg", fokus: "45% 40%", r: 6 },
+  { src: "bilder/bilde5.jpg", fokus: "50% 55%", r: -6 }
 ];
 
 // Tittelen på én linje: krymp litt hvis den ikke får plass
@@ -203,7 +204,7 @@ document.fonts?.ready.then(tilpass);
 const kurve = t => ({ x: -3 + 106 * t, y: (1 - t) ** 2 * 4 + 2 * t * (1 - t) * 30 + t * t * 4 });
 (function lagLenke() {
   const lenke = $("lenke");
-  const plasser = [0.15, 0.385, 0.615, 0.85];
+  const plasser = [0.12, 0.31, 0.5, 0.69, 0.88];
   for (let i = 0; i < 15; i++) {
     const t = 0.03 + i * (0.94 / 14);
     if (plasser.some(p => Math.abs(p - t) < 0.035)) continue;
