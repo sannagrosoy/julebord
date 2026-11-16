@@ -88,23 +88,33 @@ h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; 
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .navnefelt { font: inherit; font-size: 22px; text-align: center; width: 100%; border: 1.5px solid var(--linje); border-radius: 999px; padding: 12px 16px; color: var(--tekst); background: #0a1424; }
 .navnefelt::placeholder { color: #5f7a9e; }
-.meg { text-align: center; display: grid; justify-items: center; gap: 6px; margin-top: 18px; }
-.meg img { width: min(180px, 52vw); aspect-ratio: 1; max-width: 100%; border-radius: 50%; border: 5px solid var(--papir); box-shadow: 0 0 0 6px rgba(255, 226, 166, 0.12), 0 0 40px rgba(255, 210, 140, 0.25); animation: inn 0.6s cubic-bezier(.2, 1.6, .4, 1); }
 @keyframes inn { from { transform: scale(0.2) rotate(-25deg); opacity: 0; } to { transform: none; opacity: 1; } }
-.meg .hei { font-family: var(--display); font-size: 28px; margin-top: 6px; }
-.svarboks { margin-top: 18px; display: grid; gap: 10px; }
-.valg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.valg button { font: inherit; border-radius: 999px; padding: 12px; cursor: pointer; border: 1.5px solid var(--is); background: transparent; color: var(--tekst); }
-.valg button.ja { background: var(--is); color: #0d1b2e; border-color: var(--is); }
-.valg button:disabled { opacity: 0.6; cursor: wait; }
+.felter { display: grid; gap: 10px; }
+.skaal { display: grid; justify-items: center; gap: 4px; margin-top: 14px; }
+.glass { width: 180px; max-width: 65%; height: auto; overflow: visible; }
+.glass .g { transition: transform 0.3s; }
+.glass .v { transform-origin: 48px 80px; transform: rotate(-12deg); }
+.glass .h { transform-origin: 72px 80px; transform: rotate(12deg); }
+.glass.klink .v { animation: klinkV 0.9s cubic-bezier(.3, 1.4, .5, 1); }
+.glass.klink .h { animation: klinkH 0.9s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes klinkV { 0% { transform: rotate(-12deg); } 35% { transform: rotate(9deg); } 55% { transform: rotate(4deg); } 100% { transform: rotate(-12deg); } }
+@keyframes klinkH { 0% { transform: rotate(12deg); } 35% { transform: rotate(-9deg); } 55% { transform: rotate(-4deg); } 100% { transform: rotate(12deg); } }
+.glass .gnist { opacity: 0; fill: var(--lys); }
+.glass.klink .gnist { animation: gnist 0.9s ease-out 0.25s; }
+@keyframes gnist { 0% { opacity: 0; transform: translate(0, 0) scale(0.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--gx), var(--gy)) scale(1); } }
+.glass .boble { fill: rgba(255, 255, 255, 0.7); animation: boble 2.6s ease-in infinite; }
+@keyframes boble { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-16px); opacity: 0; } }
+.skaalknapp { font: inherit; font-size: 18px; border-radius: 999px; padding: 13px 30px; cursor: pointer; border: 0; background: var(--lys); color: #2a1d05; box-shadow: 0 0 24px rgba(255, 214, 140, 0.25); }
+.skaalknapp:hover { box-shadow: 0 0 32px rgba(255, 214, 140, 0.4); }
+.neiknapp { font: inherit; font-size: 14px; background: none; border: 0; color: var(--dempet); text-decoration: underline; cursor: pointer; padding: 6px; }
+.skaalknapp:disabled, .neiknapp:disabled { opacity: 0.6; cursor: wait; }
 .paamelding label:not(.sr) { font-size: 13px; color: var(--dempet); }
 textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var(--linje); border-radius: 12px; padding: 10px; color: var(--tekst); background: #0a1424; resize: vertical; }
-.navnefelt:focus-visible, .valg button:focus-visible, textarea:focus-visible, .kopier:focus-visible { outline: 2px solid var(--is); outline-offset: 2px; }
+.navnefelt:focus-visible, .skaalknapp:focus-visible, .neiknapp:focus-visible, textarea:focus-visible, .kopier:focus-visible { outline: 2px solid var(--is); outline-offset: 2px; }
 .melding { text-align: center; font-size: 15px; min-height: 1.5em; color: var(--is); margin: 14px 0 0; }
 .melding.feil { color: #ff9aac; }
 
-.hilsen { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--dempet); font-size: 15px; }
-.hilsen img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--papir); }
+.hilsen { text-align: center; color: var(--dempet); font-size: 15px; }
 
 /* Stort bilde */
 .stort { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: rgba(5, 10, 20, 0.86); padding: max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); cursor: zoom-out; border: 0; width: 100%; }
@@ -112,7 +122,7 @@ textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var
 .stort img { display: block; max-width: 100%; max-height: 70vh; }
 
 @media (prefers-reduced-motion: reduce) {
-  .lys, .pol, .nedtelling b.flipp, .meg img, .stort .ramme { animation: none; }
+  .lys, .pol, .nedtelling b.flipp, .stort .ramme, .glass .boble, .glass.klink .v, .glass.klink .h { animation: none; }
 }
 </style>
 </head>
@@ -148,27 +158,42 @@ textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var
 
   <section class="kort paamelding" aria-labelledby="pTittel">
     <h2 id="pTittel">Kommer du?</h2>
-    <p class="under">Skriv navnet ditt</p>
-    <form id="skjema" autocomplete="off" novalidate>
+    <p class="under">Skriv navnet ditt, så skåler vi</p>
+    <form id="skjema" class="felter" autocomplete="off" novalidate>
       <label for="navn" class="sr">Navn</label>
       <input id="navn" class="navnefelt" type="text" placeholder="Navn" autocapitalize="words" spellcheck="false" maxlength="40">
-      <div class="meg" id="meg" hidden>
-        <img id="megBilde" alt="">
-        <div class="hei" id="megHei"></div>
-      </div>
-      <div class="svarboks" id="svarboks" hidden>
-        <div class="valg">
-          <button type="button" class="ja" id="ja">Jeg kommer</button>
-          <button type="button" id="nei">Kan ikke</button>
-        </div>
-        <label for="beskjed">Allergier eller en beskjed (valgfritt)</label>
-        <textarea id="beskjed" maxlength="200"></textarea>
+      <label for="beskjed">Allergier eller en beskjed (valgfritt)</label>
+      <textarea id="beskjed" maxlength="200"></textarea>
+      <div class="skaal">
+        <svg class="glass" id="glass" viewBox="0 0 120 92" aria-hidden="true">
+          <g class="g v">
+            <path d="M39 6 L57 6 L54 44 Q48 52 42 44 Z" fill="rgba(255,255,255,0.06)" stroke="#cfe1f3" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M40.6 20 L55.4 20 L54 44 Q48 51 42 44 Z" fill="#ffe2a6" opacity="0.85"/>
+            <circle class="boble" cx="46" cy="40" r="1.1"/><circle class="boble" cx="50" cy="36" r="0.9" style="animation-delay:-1.2s"/>
+            <line x1="48" y1="49" x2="48" y2="79" stroke="#cfe1f3" stroke-width="1.6"/>
+            <path d="M40 80 Q48 76 56 80" fill="none" stroke="#cfe1f3" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+          <g class="g h">
+            <path d="M63 6 L81 6 L78 44 Q72 52 66 44 Z" fill="rgba(255,255,255,0.06)" stroke="#cfe1f3" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M64.6 20 L79.4 20 L78 44 Q72 51 66 44 Z" fill="#ffe2a6" opacity="0.85"/>
+            <circle class="boble" cx="70" cy="38" r="1" style="animation-delay:-0.6s"/><circle class="boble" cx="75" cy="41" r="0.9" style="animation-delay:-1.8s"/>
+            <line x1="72" y1="49" x2="72" y2="79" stroke="#cfe1f3" stroke-width="1.6"/>
+            <path d="M64 80 Q72 76 80 80" fill="none" stroke="#cfe1f3" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+          <circle class="gnist" cx="60" cy="6" r="2.2" style="--gx:-16px;--gy:-10px"/>
+          <circle class="gnist" cx="60" cy="6" r="1.8" style="--gx:14px;--gy:-12px"/>
+          <circle class="gnist" cx="60" cy="6" r="1.5" style="--gx:0px;--gy:-18px"/>
+          <circle class="gnist" cx="60" cy="6" r="1.4" style="--gx:-22px;--gy:2px"/>
+          <circle class="gnist" cx="60" cy="6" r="1.4" style="--gx:22px;--gy:0px"/>
+        </svg>
+        <button type="button" class="skaalknapp" id="ja">Skål, jeg kommer!</button>
+        <button type="button" class="neiknapp" id="nei">Jeg kan dessverre ikke</button>
       </div>
     </form>
     <p class="melding" id="melding" role="status"></p>
   </section>
 
-  <div class="hilsen"><img src="avatarer/sanna.jpg" alt="">Hilsen Sanna</div>
+  <div class="hilsen">Hilsen Sanna</div>
 </main>
 
 <button class="stort" id="stort" type="button" hidden aria-label="Lukk bildet">
@@ -176,9 +201,7 @@ textarea { font: inherit; width: 100%; min-height: 64px; border: 1.5px solid var
 </button>
 
 <script>
-const GJESTER = ["Vilde", "Emma", "Ida", "Margit", "Ingrid", "Hedvig", "Caroline"];
 const START = new Date("2026-11-27T18:00:00+01:00");
-const bilde = n => "avatarer/" + n.toLowerCase() + ".jpg";
 const $ = id => document.getElementById(id);
 
 // Bildene på lyslenka: fil, hvor i bildet ansiktene er, og vinkel
@@ -246,37 +269,24 @@ $("kopier").addEventListener("click", () => {
 
 // Påmelding: svarene sendes til Google-arket til Sanna
 const SKRIPT_URL = "https://script.google.com/macros/s/AKfycbzTb9S58camWZGBDqttOIFTAVNb_u0YOrSk2g2139OXNvjKRZCNL7Sweo2NkbniIdqh/exec";
-const finn = t => GJESTER.find(n => n.toLocaleLowerCase("nb") === t.trim().toLocaleLowerCase("nb")) || null;
 const pent = t => t.trim().replace(/\s+/g, " ").replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toLocaleUpperCase("nb"));
-let viste = null;
 function melding(t, feil) { $("melding").textContent = t; $("melding").className = "melding" + (feil ? " feil" : ""); }
 function lest() { try { return JSON.parse(localStorage.getItem("julebord-svar") || "null"); } catch { return null; } }
+function klink() { const g = $("glass"); g.classList.remove("klink"); void g.getBoundingClientRect(); g.classList.add("klink"); }
 
-function oppdater() {
-  const tekst = $("navn").value.trim();
-  const kjent = finn(tekst);
-  if (kjent !== viste) {
-    viste = kjent;
-    $("meg").hidden = !kjent;
-    if (kjent) {
-      const img = $("megBilde");
-      img.src = bilde(kjent);
-      img.style.animation = "none"; void img.offsetWidth; img.style.animation = "";
-      $("megHei").textContent = "Hei, " + kjent + "!";
-    }
-  }
-  $("svarboks").hidden = tekst.length < 2;
-  const tidligere = lest();
-  if (tidligere && tidligere.navn.toLocaleLowerCase("nb") === pent(tekst).toLocaleLowerCase("nb")) {
-    melding(tidligere.svar === "kommer" ? "Du har svart at du kommer. Du kan endre det." : "Du har svart at du ikke kan. Du kan endre det.");
+function visTidligere() {
+  const t = lest();
+  if (t && t.navn.toLocaleLowerCase("nb") === pent($("navn").value).toLocaleLowerCase("nb")) {
+    melding(t.svar === "kommer" ? "Du har svart at du kommer. Du kan endre det." : "Du har svart at du ikke kan. Du kan endre det.");
   } else if (!$("melding").classList.contains("feil")) melding("");
 }
-$("navn").addEventListener("input", () => { if ($("melding").classList.contains("feil")) melding(""); oppdater(); });
+$("navn").addEventListener("input", () => { if ($("melding").classList.contains("feil")) melding(""); visTidligere(); });
 $("skjema").addEventListener("submit", e => e.preventDefault());
 
 async function send(svar) {
-  const navn = finn($("navn").value) || pent($("navn").value);
-  if (navn.length < 2) { melding("Skriv navnet ditt først.", true); return; }
+  const navn = pent($("navn").value);
+  if (navn.length < 2) { melding("Skriv navnet ditt først.", true); $("navn").focus(); return; }
+  if (svar === "kommer") klink();
   $("ja").disabled = $("nei").disabled = true;
   melding("Sender …");
   try {
@@ -284,7 +294,7 @@ async function send(svar) {
     const data = await r.json();
     if (!data.ok) throw new Error();
     try { localStorage.setItem("julebord-svar", JSON.stringify({ navn, svar })); } catch {}
-    melding(svar === "kommer" ? "Så gøy! Vi ses 27. november." : "Så synd! Takk for at du sa ifra.");
+    melding(svar === "kommer" ? "Skål, " + navn.split(" ")[0] + "! Vi ses 27. november." : "Så synd! Vi skåler for deg.");
   } catch {
     melding("Svaret kom ikke fram. Prøv igjen, eller si ifra til Sanna.", true);
   } finally {
@@ -296,7 +306,7 @@ $("nei").addEventListener("click", () => send("ikke"));
 
 const forrige = lest();
 if (forrige?.navn) $("navn").value = forrige.navn;
-oppdater();
+visTidligere();
 
 // Flippklokka
 const to = n => String(n).padStart(2, "0");
